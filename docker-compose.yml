@@ -1,0 +1,312 @@
+version: '3.7'
+services:
+
+######### PERSONAL VIDEO RECORDERS ##########
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+
+  heimdall:
+    image: linuxserver/heimdall
+    hostname: heimdall
+    container_name: heimdall
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/heimdall/config:/config
+      - ${USERDIR}/heimdall/static/drivers:/static/drivers
+    ports:
+      - 8090:80
+    restart: unless-stopped
+
+  pi-wol:
+    image: chtake/pi-wol:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+    restart: always
+    volumes:
+      - ${USERDIR}/pi-wol/data:/app/data
+    ports:
+      - 8080:8080
+    network_mode: "host"
+
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    hostname: dozzle
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9090:8080
+
+  cloudcmd:
+    container_name: cloudcmd
+    hostname: cloudcmd
+    restart: always
+    image: coderaiser/cloudcmd
+    ports:
+      - 8000:8000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}:/home/pi.docker
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - /mnt/usb/watch:/home/watch
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+
+
+  # duplicati:
+  #   container_name: duplicati
+  #   hostname: duplicati
+  #   restart: always
+  #   image: lscr.io/linuxserver/duplicati:latest
+  #   ports:
+  #     - 8000:8000
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Etc/UTC
+  #     - CLI_ARGS= #optional
+  #   volumes:
+  #     - ${USERDIR}/duplicati//appdata/config:/config
+  #     - ${USERDIR}/duplicati/backups:/backups
+  #     - ${USERDIR}/duplicati/source:/source
+  #   ports:
+  #     - 8200:8200
+
+ #Watchtower - Automatic Update of Containers/Apps
+  watchtower:
+    hostname: watchtower
+    container_name: watchtower
+    image: containrrr/watchtower
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+# Radarr – Movie Download and Management
+  radarr:
+    image: "linuxserver/radarr"
+    hostname: radarr
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/radarr/config:/config
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - /mnt/usb/watch:/home/watch
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+    ports:
+      - 7878:7878
+    restart: always
+
+
+# Sonarr – TV Show Download and Management
+  sonarr:
+    image: "linuxserver/sonarr"
+    hostname: sonarr
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/sonarr/config:/config
+      - /mnt/usb/watch:/home/watch
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+    ports:
+      - 8989:8989
+    restart: always
+
+
+#LIDARR - Music Download and Management
+  lidarr:
+    image: "linuxserver/lidarr"
+    hostname: lidarr
+    container_name: lidarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/lidarr:/config
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - ${ASUSDIR}/mixed.complete:/home/mixed.complete
+    ports:
+      - 8686:8686
+    restart: always
+  # readarr:
+  #   image: lscr.io/linuxserver/readarr:develop
+  #   container_name: readarr
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=${TZ}
+  #   volumes:
+  #     - /path/to/data:/config
+  #     - /path/to/books:/books #optional
+  #     - /path/to/downloadclient-downloads:/downloads #optional
+  #   ports:
+  #     - 8787:8787
+  #   restart: unless-stopped
+# Ombi – Accept Requests for your Media Server
+  overseerr:
+    hostname: overseerr
+    restart: always
+    image: linuxserver/overseerr
+    container_name: overseerr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/overseerr/config:/config
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - /mnt/usb/watch:/home/watch
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+    ports:
+      - 5055:5055
+
+# Jackett – Torrent Proxy
+
+  jackett:
+    image: "linuxserver/jackett"
+    hostname: jackett
+    container_name: jackett
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/jackett:/config
+      - /mnt/usb/watch:/mnt/watch
+      - ${ASUSDIR}/mixed.complete:/home/mixed.complete
+    ports:
+      - 9117:9117
+    restart: always
+
+######### DOWNLOADERS ##########
+
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    hostname: transmission
+    container_name: transmission
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+#      - TRANSMISSION_WEB_HOME= /transmission
+#      - USER= #optional
+#      - PASS= #optional
+#      - WHITELIST= #optional
+#      - PEERPORT= #optional
+#      - HOST_WHITELIST= #optional
+    volumes:
+      - ${USERDIR}/transmission/config:/config
+      - ${USERDIR}/transmission/downloads:/downloads
+      - /mnt/usb/watch:/home/watch
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+
+# # Syncthing
+#   syncthing:
+#     container_name: syncthing
+#     restart: always
+#     image: linuxserver/syncthing
+#     volumes:
+#       - /home/pi/docker/syncthing:/config
+#       - /home/pi/syncthing-data:/mnt/data
+#       - /mnt/USBHDD1/downloads/m-complete:/mnt/USBHDD1/downloads/m-complete
+#       - /mnt/USBHDD1/downloads/s-complete:/mnt/USBHDD1/downloads/s-complete
+#       - /home/pi/asusac87/movies/latest:/mnt/asusac87/movies/latest
+#       - /home/pi/asusac87/shows/latest:/mnt/asusac87/shows/k_Series/latest
+#     ports:
+#       - "8384:8384"
+#       - "22000:22000"
+#       - "21027:21027/udp"
+#     environment:
+#       - PUID=${PUID}
+#       - PGID=${PGID}
+#       - UMASK_SET=002
+#       - TZ=${TZ}
+
+######### UTILITIES ##########
+
+# # MariaDB – Database Server for your Apps
+#   mariadb:
+#     image: "linuxserver/mariadb"
+#     container_name: "mariadb"
+#     volumes:
+#       - /${USERDIR}/docker/mariadb:/config
+#     environment:
+#       - MARIADB_ROOT_PASSWORD=password
+#       - MARIADB_USER=user
+#       - MARIADB_PASSWORD=password
+#       - MARIADB_DATABASE=mariadb
+#     ports:
+#       - "3306:3306"
+#     restart: always
+#
+# # NextCloud – Your Own Cloud Storage
+#   nextcloud:
+#     container_name: nextcloud
+#    hostname: nextcloud
+#     restart: always
+#     image: linuxserver/nextcloud
+#     volumes:
+#       - /${USERDIR}/docker/nextcloud:/config
+#       - /${USERDIR}/shared_data:/data
+#       - /${USERDIR}/docker/shared:/shared
+#     ports:
+#       - "443:443"
+#     environment:
+#       - PUID=${PUID}
+#       - PGID=${PGID}
