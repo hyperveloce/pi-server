@@ -151,6 +151,24 @@ services:
     ports:
       - 8686:8686
     restart: always
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/bazarr/config:/config
+      - ${USERDIR}/transmission/downloads:/home/downloads
+      - ${ASUSDIR}/current.shows:/home/current.shows
+      - ${ASUSDIR}/movies.latest:/home/movies.latest
+      - ${ASUSDIR}/movies.angie:/home/movies.angie
+      - ${ASUSDIR}/movies.collection:/home/movies.collection
+      - ${ASUSDIR}/sna.movies:/home/sna.movies
+    ports:
+      - 6767:6767
+    restart: unless-stopped
 # Ombi – Accept Requests for your Media Server
   overseerr:
     hostname: overseerr
@@ -174,7 +192,18 @@ services:
       - 5055:5055
 
 # Jackett – Torrent Proxy
-
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PUID}
+      - TZ=${TZ}
+    volumes:
+      -  ${USERDIR}/prowlarr/config:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
   jackett:
     image: "linuxserver/jackett"
     hostname: jackett
