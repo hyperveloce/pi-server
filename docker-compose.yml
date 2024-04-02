@@ -17,6 +17,8 @@ services:
 # Wake-On-Lan
   pi-wol:
     image: chtake/pi-wol:latest
+    container_name: pi-wol
+    hostname: pi-wol
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8080
