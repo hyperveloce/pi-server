@@ -15,21 +15,6 @@ services:
     ports:
       - 80:80
 
-  heimdall:
-    image: linuxserver/heimdall
-    hostname: heimdall
-    container_name: heimdall
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}/heimdall/config:/config
-      - ${USERDIR}/heimdall/static/drivers:/static/drivers
-    ports:
-      - 8090:80
-    restart: unless-stopped
-
   pi-wol:
     image: chtake/pi-wol:latest
     environment:
@@ -41,7 +26,6 @@ services:
     ports:
       - 8080:8080
     network_mode: "host"
-
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
@@ -111,7 +95,6 @@ services:
       - 7878:7878
     restart: always
 
-
 # Sonarr – TV Show Download and Management
   sonarr:
     image: "linuxserver/sonarr"
@@ -133,7 +116,6 @@ services:
     ports:
       - 8989:8989
     restart: always
-
 
 #LIDARR - Music Download and Management
   lidarr:
@@ -204,21 +186,6 @@ services:
     ports:
       - 9696:9696
     restart: unless-stopped
-  jackett:
-    image: "linuxserver/jackett"
-    hostname: jackett
-    container_name: jackett
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}/jackett:/config
-      - /mnt/usb/watch:/mnt/watch
-      - ${ASUSDIR}/mixed.complete:/home/mixed.complete
-    ports:
-      - 9117:9117
-    restart: always
 
 ######### DOWNLOADERS ##########
 
