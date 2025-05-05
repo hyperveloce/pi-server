@@ -1,20 +1,8 @@
-version: '3.7'
+version: "3.7"
 services:
+  ######### PERSONAL VIDEO RECORDERS ##########
 
-######### PERSONAL VIDEO RECORDERS ##########
-  nginx:
-    image: nginx
-    container_name: nginx
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}/nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-# Wake-On-Lan
+  # Wake-On-Lan
   pi-wol:
     image: chtake/pi-wol:latest
     container_name: pi-wol
@@ -28,54 +16,8 @@ services:
     ports:
       - 8080:8080
     network_mode: "host"
-# Dozzle - Docker container logger
-  dozzle:
-    container_name: dozzle
-    image: amir20/dozzle:latest
-    hostname: dozzle
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 9090:8080
-# Cloud - File Management
-  cloudcmd:
-    container_name: cloudcmd
-    hostname: cloudcmd
-    restart: always
-    image: coderaiser/cloudcmd
-    ports:
-      - 8000:8000
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}:/home/pi.docker
-      - ${USERDIR}/transmission/downloads:/home/downloads
-      - /mnt/usb/watch:/home/watch
-      - ${ASUSDIR}/current.shows:/home/current.shows
-      - ${ASUSDIR}/movies.latest:/home/movies.latest
-      - ${ASUSDIR}/movies.angie:/home/movies.angie
-      - ${ASUSDIR}/movies.collection:/home/movies.collection
-      - ${ASUSDIR}/sna.movies:/home/sna.movies
 
- #Watchtower - Automatic Update of Containers/Apps
-  watchtower:
-    hostname: watchtower
-    container_name: watchtower
-    image: containrrr/watchtower
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-# Radarr – Movie Download and Management
+  # Radarr – Movie Download and Management
   radarr:
     image: "linuxserver/radarr"
     hostname: radarr
@@ -97,7 +39,7 @@ services:
       - 7878:7878
     restart: always
 
-# Sonarr – TV Show Download and Management
+  # Sonarr – TV Show Download and Management
   sonarr:
     image: "linuxserver/sonarr"
     hostname: sonarr
@@ -118,43 +60,8 @@ services:
     ports:
       - 8989:8989
     restart: always
-#LIDARR - Music Download and Management
-  lidarr:
-    image: "linuxserver/lidarr"
-    hostname: lidarr
-    container_name: lidarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}/lidarr:/config
-      - ${USERDIR}/transmission/downloads:/home/downloads
-      - ${ASUSDIR}/mixed.complete:/home/mixed.complete
-    ports:
-      - 8686:8686
-    restart: always
-# bazarr – Subtitles
 
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - ${USERDIR}/bazarr/config:/config
-      - ${USERDIR}/transmission/downloads:/home/downloads
-      - ${ASUSDIR}/current.shows:/home/current.shows
-      - ${ASUSDIR}/movies.latest:/home/movies.latest
-      - ${ASUSDIR}/movies.angie:/home/movies.angie
-      - ${ASUSDIR}/movies.collection:/home/movies.collection
-      - ${ASUSDIR}/sna.movies:/home/sna.movies
-    ports:
-      - 6767:6767
-    restart: unless-stopped
-# Overseerr – Accept Requests for your Media Server
+  # Overseerr – Accept Requests for your Media Server
   overseerr:
     hostname: overseerr
     restart: always
@@ -176,7 +83,7 @@ services:
     ports:
       - 5055:5055
 
-# prowlarr – Torrent Proxy
+  # prowlarr – Torrent Proxy
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -185,12 +92,12 @@ services:
       - PGID=${PUID}
       - TZ=${TZ}
     volumes:
-      -  ${USERDIR}/prowlarr/config:/config
+      - ${USERDIR}/prowlarr/config:/config
     ports:
       - 9696:9696
     restart: unless-stopped
 
-######### DOWNLOADERS ##########
+  ######### DOWNLOADERS ##########
 
   transmission:
     image: lscr.io/linuxserver/transmission:latest
@@ -200,12 +107,12 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-#      - TRANSMISSION_WEB_HOME= /transmission
-#      - USER= #optional
-#      - PASS= #optional
-#      - WHITELIST= #optional
-#      - PEERPORT= #optional
-#      - HOST_WHITELIST= #optional
+    #      - TRANSMISSION_WEB_HOME= /transmission
+    #      - USER= #optional
+    #      - PASS= #optional
+    #      - WHITELIST= #optional
+    #      - PEERPORT= #optional
+    #      - HOST_WHITELIST= #optional
     volumes:
       - ${USERDIR}/transmission/config:/config
       - ${USERDIR}/transmission/downloads:/downloads
