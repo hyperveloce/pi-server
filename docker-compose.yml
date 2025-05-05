@@ -1,6 +1,18 @@
 version: "3.7"
 services:
   ######### PERSONAL VIDEO RECORDERS ##########
+  nginx:
+    image: nginx
+    container_name: nginx
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${USERDIR}/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
 
   # Wake-On-Lan
   pi-wol:
