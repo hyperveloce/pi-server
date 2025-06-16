@@ -1,5 +1,5 @@
 #!/bin/bash
-fastfetch
+neofetch --off --cpu_temp C --memory --disk_used --uptime
 
 iatest=$(expr index "$-" i)
 
@@ -754,7 +754,7 @@ else
 	echo "can't found the autojump script"
 fi
 
-
+export TERM=xterm-256color
 export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
 export ANDROID_HOME=/home/kanasu/Android/Sdk
 export PATH=$ANDROID_HOME/emulator/:$PATH

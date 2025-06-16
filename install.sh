@@ -34,7 +34,7 @@ apt install -y \
   curl wget unzip git \
   vim neovim \
   sudo fail2ban \
-  net-tools htop \
+  net-tools htop neofetch\
   zoxide gnupg lsb-release ca-certificates software-properties-common
 
 # UFW firewall (install separately and conditionally)
