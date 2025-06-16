@@ -25,28 +25,39 @@ fi
 usermod -aG sudo "$username"
 
 # Enable SSH
+apt install -y openssh-server
 systemctl enable ssh
 systemctl start ssh
 
-# Install useful base packages
+# Install useful base packages (skip btop)
 apt install -y \
   curl wget unzip git \
   vim neovim \
-  sudo ufw fail2ban \
-  net-tools htop btop \
-  zoxide
+  sudo fail2ban \
+  net-tools htop \
+  zoxide gnupg lsb-release ca-certificates software-properties-common
 
-# Setup UFW firewall
-ufw default deny incoming
-ufw default allow outgoing
-ufw allow 22/tcp
-ufw --force enable
+# UFW firewall (install separately and conditionally)
+if ! command -v ufw &>/dev/null; then
+  echo "🔐 Installing UFW..."
+  apt install -y ufw
+fi
+
+# Setup UFW firewall if now available
+if command -v ufw &>/dev/null; then
+  ufw default deny incoming
+  ufw default allow outgoing
+  ufw allow 22/tcp
+  ufw --force enable
+else
+  echo "⚠️ UFW is still not available — skipping firewall setup"
+fi
 
 # Enable fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 
-# ---- Check and Install Docker ---- #
+# Install Docker if not installed
 if ! command -v docker &>/dev/null; then
   echo "🐳 Installing Docker..."
   curl -fsSL https://get.docker.com -o get-docker.sh
@@ -58,7 +69,7 @@ fi
 # Ensure user is in docker group
 usermod -aG docker "$username"
 
-# ---- Check and Install Docker Compose Plugin ---- #
+# Install Docker Compose Plugin if needed
 if ! docker compose version &>/dev/null; then
   echo "🔧 Installing Docker Compose Plugin..."
   apt install -y docker-compose-plugin
@@ -66,21 +77,21 @@ else
   echo "✅ Docker Compose Plugin is already installed."
 fi
 
-# Setup Docker Compose working directory
+# Create Docker folder
 mkdir -p /home/$username/pi.docker
 chown -R $username:$username /home/$username/pi.docker
 
-# Optional: Setup mounts (uncomment and edit UUIDs as needed)
+# Optional: Setup mounts
 # echo "UUID=XXXX-XXXX    /mnt/data    ext4    defaults   0  2" | tee -a /etc/fstab
 # mkdir -p /mnt/data && mount -a
 
-# Configure zoxide in .bashrc
+# Add zoxide init to bashrc
 echo 'eval "$(zoxide init bash)"' >> /home/$username/.bashrc
 
-# Font cache rebuild (if needed)
+# Rebuild font cache (optional)
 fc-cache -fv
 
-# Final cleanup
+# Clean up
 apt autoremove -y
 apt clean
 
