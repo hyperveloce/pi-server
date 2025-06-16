@@ -24,7 +24,7 @@ if ! id "$username" &>/dev/null; then
 fi
 usermod -aG sudo "$username"
 
-# Enable SSH
+# Install and enable SSH
 apt install -y openssh-server
 systemctl enable ssh
 systemctl start ssh
@@ -45,6 +45,7 @@ fi
 
 # Setup UFW firewall if now available
 if command -v ufw &>/dev/null; then
+  echo "⚙️ Configuring UFW firewall..."
   ufw default deny incoming
   ufw default allow outgoing
   ufw allow 22/tcp
@@ -53,7 +54,7 @@ else
   echo "⚠️ UFW is still not available — skipping firewall setup"
 fi
 
-# Enable fail2ban
+# Enable and start fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 
@@ -85,8 +86,10 @@ chown -R $username:$username /home/$username/pi.docker
 # echo "UUID=XXXX-XXXX    /mnt/data    ext4    defaults   0  2" | tee -a /etc/fstab
 # mkdir -p /mnt/data && mount -a
 
-# Add zoxide init to bashrc
-echo 'eval "$(zoxide init bash)"' >> /home/$username/.bashrc
+# Add zoxide init to bashrc if not already present
+if ! grep -q 'zoxide init bash' /home/$username/.bashrc; then
+  echo 'eval "$(zoxide init bash)"' >> /home/$username/.bashrc
+fi
 
 # Rebuild font cache (optional)
 fc-cache -fv
