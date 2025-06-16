@@ -1,6 +1,8 @@
 #!/bin/bash
+fastfetch
+
 iatest=$(expr index "$-" i)
-neofetch
+
 #######################################################
 # SOURCED ALIAS'S AND SCRIPTS BY zachbrowne.me
 #######################################################
@@ -195,16 +197,21 @@ alias 666='chmod -R 666'
 alias 755='chmod -R 755'
 alias 777='chmod -R 777'
 
-# Git Aliases (simple & clean)
-alias ga='git add'
-alias gc='git commit -m'
-alias gp='git push'
-alias gl='git pull'
-alias gs='git status'
-alias gco='git checkout'
-alias gb='git branch'
-alias gd='git diff'
-alias glog='git log --oneline --graph'
+
+# Docker commands
+alias dps='docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'  # List all containers
+alias dst='docker stop'  # Stop a container
+alias dsrt='docker start'  # Start a container
+alias drst='docker restart'  # Restart a container
+alias drm='docker rm'  # Remove a container
+alias drmi='docker rmi'  # Remove an image
+alias dlo='docker logs'  # View container logs
+alias dex='docker exec -it'  # Run commands inside a container
+alias dbu='docker build'  # Build Docker images
+alias dim='docker images'  # List Docker images
+alias dpl='docker pull'  # Pull an image
+alias dpl='docker push'  # Push an image
+alias dcle='docker system prune -f'  # Clean unused Docker data
 
 # Quick undo
 alias guncommit='git reset --soft HEAD~1'
@@ -219,19 +226,21 @@ alias gfp='git fetch --prune'
 alias gclean='git clean -fd'
 
 # Docker commands
-alias dps='docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'  # List all containers
-alias dsto='docker stop'  # Stop a container
-alias dstt='docker start'  # Start a container
-alias drst='docker restart'  # Restart a container
+alias d='docker'  # Shorten docker command
+alias dps='docker ps'  # List running containers
+alias dpsa='docker ps -a'  # List all containers (including stopped)
+alias dstop='docker stop'  # Stop a container
+alias dstart='docker start'  # Start a container
+alias drestart='docker restart'  # Restart a container
 alias drm='docker rm'  # Remove a container
 alias drmi='docker rmi'  # Remove an image
-alias dlo='docker logs'  # View container logs
-alias dex='docker exec -it'  # Run commands inside a container
-alias dbu='docker build'  # Build Docker images
-alias dim='docker images'  # List Docker images
-alias dpl='docker pull'  # Pull an image
-alias dpl='docker push'  # Push an image
-alias dcle='docker system prune -f'  # Clean unused Docker data
+alias dlogs='docker logs'  # View logs from a container
+alias dexec='docker exec -it'  # Execute commands inside a container interactively
+alias dbuild='docker build'  # Build Docker images
+alias dimages='docker images'  # List Docker images
+alias dpull='docker pull'  # Pull an image from a registry
+alias dpush='docker push'  # Push an image to a registry
+alias dclean='docker system prune -f'  # Clean up unused Docker data
 
 # Search command line history
 alias h="history | grep "
@@ -754,6 +763,11 @@ export PATH=$ANDROID_HOME/cmdline-tools/bin/:$PATH
 if [ -f "/home/kanasu/.use-nala" ]; then
         . "/home/kanasu/.use-nala"
 fi
-if [ -f "/home/kanasu/.use-nala" ]; then
-        . "/home/kanasu/.use-nala"
+
+# Check if we're in an SSH session
+if [[ -n "$SSH_CONNECTION" ]]; then
+    export PS1="\[\033[01;32m\][SSH] \[\033[00m\]\u@\h:\w\$ "
+else
+    export PS1="\[\033[01;34m\]\u@\h:\w\$ \[\033[00m\]"
+
 fi
