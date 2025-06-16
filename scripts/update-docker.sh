@@ -4,7 +4,6 @@
 # Set the path to your Docker Compose files
 DOCKER_COMPOSE_DIR="/home/pi/git.hyperveloce/pi-server"
 LOG_FILE="/var/log/docker_update.log"
-NEXTCLOUD_CONTAINER="nextcloud"
 
 # Timestamp function
 timestamp() {
