@@ -1,8 +1,23 @@
 version: "3.7"
 services:
+  nginx_pm:
+    image: "jc21/nginx-proxy-manager:latest"
+    container_name: nginx_pm
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "81:81" # Admin interface
+      - "443:443"
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+    volumes:
+      - /srv/data/nginxpm_data:/data
+      - /srv/data/nginxpm_letsencrypt:/etc/letsencrypt
+
   docker-socket-proxy:
     image: tecnativa/docker-socket-proxy
     container_name: docker-socket-proxy
+    restart: unless-stopped
     environment:
       CONTAINERS: 1
       IMAGES: 1
@@ -11,6 +26,8 @@ services:
       EVENTS: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "2375:2375" # Expose port to host
 
   beszel-agent:
     image: "henrygd/beszel-agent"
@@ -26,18 +43,18 @@ services:
       KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGDKzBXCwJ3T1w7MS1dE35M5JnIwe/kHvizoHGtvzSzw"
       SERVER: "https://beszel.dnaone.love/"
 
-  dozzle:
-    image: amir20/dozzle:latest
-    container_name: dozzle
-    restart: unless-stopped
-    # ports:
-    #   - "8070:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - DOCKER_HOST=tcp://192.168.50.201:2375 # Use host IP for docker-socket-proxy
-    depends_on:
-      - docker-socket-proxy
+  # dozzle:
+  #   image: amir20/dozzle:latest
+  #   container_name: dozzle
+  #   restart: unless-stopped
+  #   # ports:
+  #   #   - "8070:8080"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   environment:
+  #     - DOCKER_HOST=tcp://192.168.50.200:2375 # Use host IP for docker-socket-proxy
+  #   depends_on:
+  #     - docker-socket-proxy
 
   ######### PERSONAL VIDEO RECORDERS ##########
   nginx:
