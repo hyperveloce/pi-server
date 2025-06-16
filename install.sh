@@ -18,9 +18,11 @@ apt update && apt upgrade -y
 hostnamectl set-hostname pi-server
 timedatectl set-timezone Australia/Melbourne
 
-# Create user and add to sudo
-adduser $username
-usermod -aG sudo $username
+# Create user and add to sudo (only if not existing)
+if ! id "$username" &>/dev/null; then
+  adduser "$username"
+fi
+usermod -aG sudo "$username"
 
 # Enable SSH
 systemctl enable ssh
@@ -38,21 +40,33 @@ apt install -y \
 ufw default deny incoming
 ufw default allow outgoing
 ufw allow 22/tcp
-ufw enable
+ufw --force enable
 
 # Enable fail2ban
 systemctl enable fail2ban
 systemctl start fail2ban
 
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sh get-docker.sh
-usermod -aG docker $username
+# ---- Check and Install Docker ---- #
+if ! command -v docker &>/dev/null; then
+  echo "🐳 Installing Docker..."
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sh get-docker.sh
+else
+  echo "✅ Docker is already installed."
+fi
 
-# Install Docker Compose (v2 plugin)
-apt install -y docker-compose-plugin
+# Ensure user is in docker group
+usermod -aG docker "$username"
 
-# Setup optional Docker Compose directory
+# ---- Check and Install Docker Compose Plugin ---- #
+if ! docker compose version &>/dev/null; then
+  echo "🔧 Installing Docker Compose Plugin..."
+  apt install -y docker-compose-plugin
+else
+  echo "✅ Docker Compose Plugin is already installed."
+fi
+
+# Setup Docker Compose working directory
 mkdir -p /home/$username/pi.docker
 chown -R $username:$username /home/$username/pi.docker
 
@@ -60,7 +74,7 @@ chown -R $username:$username /home/$username/pi.docker
 # echo "UUID=XXXX-XXXX    /mnt/data    ext4    defaults   0  2" | tee -a /etc/fstab
 # mkdir -p /mnt/data && mount -a
 
-# Configure .bashrc / .profile
+# Configure zoxide in .bashrc
 echo 'eval "$(zoxide init bash)"' >> /home/$username/.bashrc
 
 # Font cache rebuild (if needed)
