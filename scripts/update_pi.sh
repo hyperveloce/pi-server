@@ -9,23 +9,6 @@ sudo apt autoremove -y
 sudo apt clean
 sudo apt autoclean
 
-# Update Snaps (if installed)
-echo -e "\n\033[1;32mUpdating Snaps...\033[0m"
-if command -v snap &> /dev/null; then
-    sudo snap refresh
-else
-    echo "Snap not installed. Skipping."
-fi
-
-# Update Firmware (fwupd)
-echo -e "\n\033[1;32mChecking for firmware updates...\033[0m"
-if command -v fwupdmgr &> /dev/null; then
-    sudo fwupdmgr refresh
-    sudo fwupdmgr update
-else
-    echo "fwupd (firmware updater) not installed. Skipping."
-fi
-
 # Check for Python (pip) updates
 echo -e "\n\033[1;32mChecking for outdated Python packages...\033[0m"
 if command -v pip &> /dev/null; then
