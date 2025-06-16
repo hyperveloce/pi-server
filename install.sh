@@ -15,7 +15,7 @@ echo "🔧 Running system setup for headless Raspberry Pi..."
 apt update && apt upgrade -y
 
 # Set hostname and timezone
-hostnamectl set-hostname hyperveloce
+hostnamectl set-hostname pi-server
 timedatectl set-timezone Australia/Melbourne
 
 # Create user and add to sudo
@@ -53,8 +53,8 @@ usermod -aG docker $username
 apt install -y docker-compose-plugin
 
 # Setup optional Docker Compose directory
-mkdir -p /home/$username/docker
-chown -R $username:$username /home/$username/docker
+mkdir -p /home/$username/pi.docker
+chown -R $username:$username /home/$username/pi.docker
 
 # Optional: Setup mounts (uncomment and edit UUIDs as needed)
 # echo "UUID=XXXX-XXXX    /mnt/data    ext4    defaults   0  2" | tee -a /etc/fstab
