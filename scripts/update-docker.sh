@@ -2,7 +2,7 @@
 # chmod +x update-docker.sh
 
 # Set the path to your Docker Compose files
-DOCKER_COMPOSE_DIR="/home/pi/git.hyperveloce/docker.compose.homelab"
+DOCKER_COMPOSE_DIR="/home/pi/git.hyperveloce/pi-server"
 LOG_FILE="/var/log/docker_update.log"
 NEXTCLOUD_CONTAINER="nextcloud"
 
@@ -28,22 +28,6 @@ docker-compose pull
 # Recreate containers with updated images
 log "🔄 Recreating containers..."
 docker-compose up -d --remove-orphans
-
-# Wait for Nextcloud to initialize (adjust sleep if needed)
-log "⏳ Waiting a few seconds for Nextcloud to initialize..."
-sleep 10
-
-# Run Nextcloud upgrade
-log "⚙️ Running Nextcloud upgrade..."
-docker exec -u www-data "$NEXTCLOUD_CONTAINER" php occ upgrade || log "⚠️ occ upgrade failed"
-
-# Run maintenance:repair
-log "🛠️ Running Nextcloud maintenance:repair..."
-docker exec -u www-data "$NEXTCLOUD_CONTAINER" php occ maintenance:repair || log "⚠️ maintenance:repair returned warnings"
-
-# Ensure maintenance mode is off
-log "✅ Disabling maintenance mode..."
-docker exec -u www-data "$NEXTCLOUD_CONTAINER" php occ maintenance:mode --off || log "⚠️ Failed to disable maintenance mode"
 
 # Cleanup
 log "🧹 Cleaning up old images and containers..."
