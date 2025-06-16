@@ -11,8 +11,6 @@ services:
       EVENTS: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - app_network
 
   beszel-agent:
     image: "henrygd/beszel-agent"
