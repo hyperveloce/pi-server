@@ -64,7 +64,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${USERDIR}/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /home/pi/git.hyperveloce/pi-server/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
 
