@@ -28,6 +28,8 @@ services:
       LISTEN: 45876
       KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGDKzBXCwJ3T1w7MS1dE35M5JnIwe/kHvizoHGtvzSzw"
       SERVER: "https://beszel.dnaone.love/"
+    networks:
+      - pi-server_net
 
   dozzle-agent:
     image: amir20/dozzle:latest
@@ -39,6 +41,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
       - 7007:7007
+    networks:
+      - pi-server_net
 
   ######### PERSONAL VIDEO RECORDERS ##########
   nginx:
@@ -53,6 +57,8 @@ services:
       - /home/pi/git.hyperveloce/pi-server/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 80:80
+    networks:
+      - pi-server_net
 
   # Wake-On-Lan
   pi-wol:
@@ -90,6 +96,8 @@ services:
     # ports:
     #   - 7878:7878
     restart: always
+    networks:
+      - pi-server_net
 
   # Sonarr – TV Show Download and Management
   sonarr:
@@ -112,6 +120,8 @@ services:
     # ports:
     #   - 8989:8989
     restart: always
+    networks:
+      - pi-server_net
 
   # Overseerr – Accept Requests for your Media Server
   overseerr:
@@ -134,6 +144,8 @@ services:
       - ${ASUSDIR}/sna.movies:/home/sna.movies
     ports:
       - 5055:5055
+    networks:
+      - pi-server_net
 
   # prowlarr – Torrent Proxy
   prowlarr:
@@ -148,6 +160,8 @@ services:
     # ports:
     #   - 9696:9696
     restart: unless-stopped
+    networks:
+      - pi-server_net
 
   ######### DOWNLOADERS ##########
 
@@ -178,3 +192,9 @@ services:
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
+    networks:
+      - pi-server_net
+
+networks:
+  pi-server_net:
+    driver: bridge
