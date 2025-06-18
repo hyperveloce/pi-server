@@ -69,6 +69,7 @@ services:
     restart: always
     volumes:
       - ${USERDIR}/pi-wol/data:/app/data
+      - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
     ports:
       - 8880:8080
     network_mode: "host"
