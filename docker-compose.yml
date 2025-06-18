@@ -193,6 +193,7 @@ services:
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
     ports:
+      - 127.0.0.1:9091:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
