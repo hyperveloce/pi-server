@@ -1,19 +1,5 @@
 version: "3.7"
 services:
-  nginx_pm:
-    image: "jc21/nginx-proxy-manager:latest"
-    container_name: nginx_pm
-    restart: unless-stopped
-    ports:
-      - "800:80"
-      - "81:81" # Admin interface
-      - "443:443"
-    environment:
-      DB_SQLITE_FILE: "/data/database.sqlite"
-    volumes:
-      - /srv/data/nginxpm_data:/data
-      - /srv/data/nginxpm_letsencrypt:/etc/letsencrypt
-
   docker-socket-proxy:
     image: tecnativa/docker-socket-proxy
     container_name: docker-socket-proxy
@@ -101,8 +87,8 @@ services:
       - ${ASUSDIR}/movies.angie:/home/movies.angie
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
-    ports:
-      - 7878:7878
+    # ports:
+    #   - 7878:7878
     restart: always
 
   # Sonarr – TV Show Download and Management
@@ -123,8 +109,8 @@ services:
       - ${ASUSDIR}/movies.angie:/home/movies.angie
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
-    ports:
-      - 8989:8989
+    # ports:
+    #   - 8989:8989
     restart: always
 
   # Overseerr – Accept Requests for your Media Server
@@ -159,8 +145,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${USERDIR}/prowlarr/config:/config
-    ports:
-      - 9696:9696
+    # ports:
+    #   - 9696:9696
     restart: unless-stopped
 
   ######### DOWNLOADERS ##########
