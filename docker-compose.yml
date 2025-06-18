@@ -70,7 +70,7 @@ services:
     volumes:
       - ${USERDIR}/pi-wol/data:/app/data
     ports:
-      - 8080:8080
+      - 8880:8080
     network_mode: "host"
 
   # Radarr – Movie Download and Management
