@@ -72,7 +72,8 @@ services:
       - ./dataprotection-keys:/root/.aspnet/DataProtection-Keys
     ports:
       - 8880:8080
-    network_mode: "host"
+    networks:
+      - pi-server_net
 
   # Radarr – Movie Download and Management
   radarr:
