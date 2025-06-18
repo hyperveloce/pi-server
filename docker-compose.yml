@@ -28,8 +28,6 @@ services:
       LISTEN: 45876
       KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGDKzBXCwJ3T1w7MS1dE35M5JnIwe/kHvizoHGtvzSzw"
       SERVER: "https://beszel.dnaone.love/"
-    networks:
-      - pi-server_net
 
   dozzle-agent:
     image: amir20/dozzle:latest
