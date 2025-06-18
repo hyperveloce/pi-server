@@ -19,7 +19,7 @@ services:
     image: "henrygd/beszel-agent"
     container_name: "beszel-agent"
     restart: unless-stopped
-    network_mode: host
+    # network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # monitor other disks / partitions by mounting a folder in /extra-filesystems
@@ -28,6 +28,10 @@ services:
       LISTEN: 45876
       KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGDKzBXCwJ3T1w7MS1dE35M5JnIwe/kHvizoHGtvzSzw"
       SERVER: "https://beszel.dnaone.love/"
+    ports:
+      - "45876:45876" # Expose port to host
+    networks:
+      - pi-server_net
 
   dozzle-agent:
     image: amir20/dozzle:latest
