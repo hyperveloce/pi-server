@@ -162,7 +162,7 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - TRANSMISSION_WEB_HOME= /usr/share/transmission/web
+      # - TRANSMISSION_WEB_HOME= /usr/share/transmission/web
     #      - USER= #optional
     #      - PASS= #optional
     #      - WHITELIST= #optional
