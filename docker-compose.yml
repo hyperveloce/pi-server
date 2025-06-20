@@ -47,21 +47,6 @@ services:
       - pi-server_net
 
   ######### PERSONAL VIDEO RECORDERS ##########
-  nginx:
-    image: nginx
-    container_name: nginx
-    restart: unless-stopped
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /home/pi/git.hyperveloce/pi-server/nginx/nginx.conf:/etc/nginx/nginx.conf
-    ports:
-      - 80:80
-    networks:
-      - pi-server_net
-
   # Wake-On-Lan
   pi-wol:
     image: chtake/pi-wol:latest
@@ -97,8 +82,8 @@ services:
       - ${ASUSDIR}/movies.angie:/home/movies.angie
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
-    # ports:
-    #   - 7878:7878
+    ports:
+      - 7878:7878
     restart: always
     networks:
       - pi-server_net
@@ -121,8 +106,8 @@ services:
       - ${ASUSDIR}/movies.angie:/home/movies.angie
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
-    # ports:
-    #   - 8989:8989
+    ports:
+      - 8989:8989
     restart: always
     networks:
       - pi-server_net
@@ -161,8 +146,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${USERDIR}/prowlarr/config:/config
-    # ports:
-    #   - 9696:9696
+    ports:
+      - 9696:9696
     restart: unless-stopped
     networks:
       - pi-server_net
@@ -193,7 +178,7 @@ services:
       - ${ASUSDIR}/movies.collection:/home/movies.collection
       - ${ASUSDIR}/sna.movies:/home/sna.movies
     ports:
-      - 127.0.0.1:9091:9091
+      - 9091:9091
       - 51413:51413
       - 51413:51413/udp
     restart: unless-stopped
