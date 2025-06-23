@@ -38,6 +38,7 @@ services:
     container_name: glances
     restart: always
     pid: "host"
+    privileged: true
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${USERDIR}/glances/glances.conf:/glances/conf/glances.conf"
