@@ -34,7 +34,7 @@ services:
       - pi-server_net
 
   glances:
-    image: nicolargo/glances:3.3.10
+    image: nicolargo/glances:latest
     container_name: glances
     restart: always
     pid: "host"
