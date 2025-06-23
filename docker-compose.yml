@@ -41,12 +41,11 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${USERDIR}/glances/glances.conf:/glances/conf/glances.conf"
-    environment:
-      - GLANCES_OPT=-C /glances/conf/glances.conf -w
     ports:
-      - "61208:61208" # <--- Add this
+      - "61208:61208"
     networks:
       - pi-server_net
+    command: glances -C /glances/conf/glances.conf -w
 
   dozzle-agent:
     image: amir20/dozzle:latest
