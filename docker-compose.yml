@@ -38,19 +38,20 @@ services:
     container_name: glances
     restart: always
     pid: "host"
-    # privileged: true
-    # network_mode: "host"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "${USERDIR}/glances/glances.conf:/glances/conf/glances.conf"
     environment:
       - GLANCES_OPT=-C /glances/conf/glances.conf -w
+    ports:
+      - "61208:61208" # <--- Add this
     networks:
       - pi-server_net
 
   dozzle-agent:
     image: amir20/dozzle:latest
     container_name: dozzle-agent
+
     restart: unless-stopped
     command: agent
     environment:
