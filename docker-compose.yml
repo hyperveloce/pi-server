@@ -34,7 +34,8 @@ services:
       - pi-server_net
 
   glances:
-    image: jdreinhardt/glances:latest
+    image: nicolargo/glances:latest
+    container_name: glances
     restart: always
     pid: "host"
     # privileged: true
@@ -49,6 +50,7 @@ services:
 
   dozzle-agent:
     image: amir20/dozzle:latest
+    container_name: dozzle-agent
     restart: unless-stopped
     command: agent
     environment:
