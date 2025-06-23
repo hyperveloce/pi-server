@@ -33,6 +33,20 @@ services:
     networks:
       - pi-server_net
 
+  glances:
+    image: jdreinhardt/glances:latest
+    restart: always
+    pid: "host"
+    # privileged: true
+    # network_mode: "host"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "${USERDIR}/glances/glances.conf:/glances/conf/glances.conf"
+    environment:
+      - GLANCES_OPT=-C /glances/conf/glances.conf -w
+    networks:
+      - pi-server_net
+
   dozzle-agent:
     image: amir20/dozzle:latest
     restart: unless-stopped
