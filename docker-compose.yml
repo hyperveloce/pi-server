@@ -53,9 +53,8 @@ services:
   dozzle-agent:
     image: amir20/dozzle:latest
     container_name: dozzle-agent
-
     restart: unless-stopped
-    command: agent
+    command: agent --disable-tls
     environment:
       - DOZZLE_HOSTNAME=piserver
     volumes:
