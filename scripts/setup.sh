@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export USER_HOME=/home/pi
+
 RC='\e[0m'
 RED='\e[31m'
 YELLOW='\e[33m'
