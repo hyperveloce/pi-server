@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# chmod +x setup.sh
+#
 export USER_HOME=/home/pi
 
 RC='\e[0m'
